@@ -1,11 +1,12 @@
-package pkg
+package postgres
 
 import (
+	config2 "MyMechanic/config"
 	"fmt"
-	"github.com/AleksK1NG/api-mc/config"
+	"time"
+
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
 	"github.com/jmoiron/sqlx"
-	"time"
 )
 
 const (
@@ -16,7 +17,7 @@ const (
 )
 
 // Return new Postgresql db instance
-func NewPsqlDB(c *config.Config) (*sqlx.DB, error) {
+func NewPsqlDB(c *config2.Config) (*sqlx.DB, error) {
 	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		c.Postgres.PostgresqlHost,
 		c.Postgres.PostgresqlPort,
