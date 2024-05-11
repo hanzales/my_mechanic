@@ -19,9 +19,9 @@ func NewCommentsRepository(db *sqlx.DB) comments.Repository {
 }
 
 // GetByID comment
-func (r *commentsRepo) GetByID(ctx context.Context, id int) (*models.CommentBase, error) {
+func (r *commentsRepo) GetByID(ctx context.Context, id int) (*models.Comment, error) {
 
-	comment := &models.CommentBase{}
+	comment := &models.Comment{}
 	if err := r.db.GetContext(ctx, comment, getCommentByID, id); err != nil {
 		return nil, errors.Wrap(err, "commentsRepo.GetByID.GetContext")
 	}

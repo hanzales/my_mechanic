@@ -746,66 +746,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "Update news handler",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "News"
-                ],
-                "summary": "Update news",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "news_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.News"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete by id news handler",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "News"
-                ],
-                "summary": "Delete news",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "news_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -826,58 +766,20 @@ var doc = `{
         "models.Comment": {
             "type": "object",
             "required": [
-                "author_id",
                 "message",
-                "news_id"
             ],
             "properties": {
-                "author_id": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
                 },
-                "comment_id": {
-                    "type": "string"
-                },
-                "created_at": {
+                  "message": {
                     "type": "string"
                 },
                 "likes": {
                     "type": "integer"
                 },
-                "message": {
-                    "type": "string"
-                },
-                "news_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CommentBase": {
-            "type": "object",
-            "required": [
-                "author",
-                "author_id",
-                "message"
-            ],
-            "properties": {
-                "author": {
-                    "type": "string"
-                },
-                "author_id": {
-                    "type": "string"
-                },
-                "avatar_url": {
-                    "type": "string"
-                },
-                "comment_id": {
-                    "type": "string"
-                },
-                "likes": {
-                    "type": "integer"
-                },
-                "message": {
+
+              "created_at": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -885,182 +787,6 @@ var doc = `{
                 }
             }
         },
-        "models.CommentsList": {
-            "type": "object",
-            "properties": {
-                "comments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.CommentBase"
-                    }
-                },
-                "has_more": {
-                    "type": "boolean"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                },
-                "total_pages": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.News": {
-            "type": "object",
-            "required": [
-                "author_id",
-                "content",
-                "title"
-            ],
-            "properties": {
-                "author_id": {
-                    "type": "string"
-                },
-                "category": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "image_url": {
-                    "type": "string"
-                },
-                "news_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.NewsList": {
-            "type": "object",
-            "properties": {
-                "has_more": {
-                    "type": "boolean"
-                },
-                "news": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.News"
-                    }
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                },
-                "total_pages": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "required": [
-                "first_name",
-                "last_name",
-                "password"
-            ],
-            "properties": {
-                "about": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "birthday": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "country": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "login_date": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "postcode": {
-                    "type": "integer"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UsersList": {
-            "type": "object",
-            "properties": {
-                "has_more": {
-                    "type": "boolean"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "size": {
-                    "type": "integer"
-                },
-                "total_count": {
-                    "type": "integer"
-                },
-                "total_pages": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.User"
-                    }
-                }
-            }
-        }
     }
 }`
 

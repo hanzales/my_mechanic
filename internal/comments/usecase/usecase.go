@@ -21,6 +21,6 @@ func NewCommentsUseCase(cfg *config.Config, commRepo comments.Repository, logger
 }
 
 // GetByID comment
-func (u *commentsUC) GetByID(ctx context.Context, id int) (*models.CommentBase, error) {
+func (u *commentsUC) GetByID(ctx context.Context, id int) (*models.Comment, error) {
 	return u.commRepo.GetByID(ctx, id)
 }
