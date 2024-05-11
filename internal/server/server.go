@@ -44,6 +44,18 @@ func (s *Server) Run() error {
 		s.echo.Server.ReadTimeout = time.Second * s.cfg.Server.ReadTimeout
 		s.echo.Server.WriteTimeout = time.Second * s.cfg.Server.WriteTimeout
 
+		//projectDir, err := os.Getwd()
+		//if err != nil {
+		//	fmt.Println("Proje dizini alınamadı:", err)
+		//}
+
+		// SSL klasörünün yolunu oluştur
+		//sslDir := filepath.Join(projectDir, "ssl")
+
+		// Server.crt dosyasının yolunu oluştur
+		//certFile := filepath.Join(sslDir, "server.crt")
+		//keyFile := filepath.Join(sslDir, "server.pem")
+
 		go func() {
 			s.logger.Infof("Server is listening on PORT: %s", s.cfg.Server.Port)
 			s.echo.Server.ReadTimeout = time.Second * s.cfg.Server.ReadTimeout

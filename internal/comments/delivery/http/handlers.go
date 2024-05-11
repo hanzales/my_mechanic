@@ -1,17 +1,15 @@
 package http
 
 import (
-	utils2 "github.com/AleksK1NG/api-mc/pkg/utils"
 	"github.com/opentracing/opentracing-go"
 	"net/http"
+	"strconv"
 
 	"MyMechanic/config"
 	"MyMechanic/internal/comments"
-	"MyMechanic/internal/models"
 	"MyMechanic/pkg/httpErrors"
 	"MyMechanic/pkg/logger"
 	"MyMechanic/pkg/utils"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -25,119 +23,6 @@ type commentsHandlers struct {
 // NewCommentsHandlers Comments handlers constructor
 func NewCommentsHandlers(cfg *config.Config, comUC comments.UseCase, logger logger.Logger) comments.Handlers {
 	return &commentsHandlers{cfg: cfg, comUC: comUC, logger: logger}
-}
-
-// Create
-// @Summary Create new comment
-// @Description create new comment
-// @Tags Comments
-// @Accept  json
-// @Produce  json
-// @Success 201 {object} models.Comment
-// @Failure 500 {object} httpErrors.RestErr
-// @Router /comments [post]
-func (h *commentsHandlers) Create() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Create")
-		defer span.Finish()
-
-		user, err := utils.GetUserFromCtx(ctx)
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		comment := &models.Comment{}
-		comment.AuthorID = user.UserID
-
-		if err = utils.SanitizeRequest(c, comment); err != nil {
-			return utils.ErrResponseWithLog(c, h.logger, err)
-			// return err
-		}
-
-		createdComment, err := h.comUC.Create(ctx, comment)
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		return c.JSON(http.StatusCreated, createdComment)
-	}
-}
-
-// Update
-// @Summary Update comment
-// @Description update new comment
-// @Tags Comments
-// @Accept  json
-// @Produce  json
-// @Param id path int true "comment_id"
-// @Success 200 {object} models.Comment
-// @Failure 500 {object} httpErrors.RestErr
-// @Router /comments/{id} [put]
-func (h *commentsHandlers) Update() echo.HandlerFunc {
-	type UpdateComment struct {
-		Message string `json:"message" db:"message" validate:"required,gte=0"`
-		Likes   int64  `json:"likes" db:"likes" validate:"omitempty"`
-	}
-	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Update")
-		defer span.Finish()
-
-		commID, err := uuid.Parse(c.Param("comment_id"))
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		comm := &UpdateComment{}
-		if err = utils.SanitizeRequest(c, comm); err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		updatedComment, err := h.comUC.Update(ctx, &models.Comment{
-			CommentID: commID,
-			Message:   comm.Message,
-			Likes:     comm.Likes,
-		})
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		return c.JSON(http.StatusOK, updatedComment)
-	}
-}
-
-// Delete
-// @Summary Delete comment
-// @Description delete comment
-// @Tags Comments
-// @Accept  json
-// @Produce  json
-// @Param id path int true "comment_id"
-// @Success 200 {string} string	"ok"
-// @Failure 500 {object} httpErrors.RestErr
-// @Router /comments/{id} [delete]
-func (h *commentsHandlers) Delete() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Delete")
-		defer span.Finish()
-
-		commID, err := uuid.Parse(c.Param("comment_id"))
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		if err = h.comUC.Delete(ctx, commID); err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		return c.NoContent(http.StatusOK)
-	}
 }
 
 // GetByID
@@ -155,7 +40,11 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.GetByID")
 		defer span.Finish()
 
-		commID, err := uuid.Parse(c.Param("comment_id"))
+		//query param olarak değeri al
+		//commentIdv2 := c.QueryParam("id")
+		//fmt.Println("değer:", commentIdv2)
+
+		commID, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
@@ -168,45 +57,5 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, comment)
-	}
-}
-
-// GetAllByNewsID
-// @Summary Get comments by news
-// @Description Get all comment by news id
-// @Tags Comments
-// @Accept  json
-// @Produce  json
-// @Param id path int true "news_id"
-// @Param page query int false "page number" Format(page)
-// @Param size query int false "number of elements per page" Format(size)
-// @Param orderBy query int false "filter name" Format(orderBy)
-// @Success 200 {object} models.CommentsList
-// @Failure 500 {object} httpErrors.RestErr
-// @Router /comments/byNewsId/{id} [get]
-func (h *commentsHandlers) GetAllByNewsID() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.GetAllByNewsID")
-		defer span.Finish()
-
-		newsID, err := uuid.Parse(c.Param("news_id"))
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		pq, err := utils.GetPaginationFromCtx(c)
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		commentsList, err := h.comUC.GetAllByNewsID(ctx, newsID, (*utils2.PaginationQuery)(pq))
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
-		}
-
-		return c.JSON(http.StatusOK, commentsList)
 	}
 }
