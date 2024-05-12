@@ -3,8 +3,8 @@ package server
 import (
 	"strings"
 
-	"github.com/AleksK1NG/api-mc/docs"
-	"github.com/AleksK1NG/api-mc/pkg/csrf"
+	"MyMechanic/docs"
+	"MyMechanic/pkg/csrf"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +28,7 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	// Init handlers
 	commHandlers := commentsHttp.NewCommentsHandlers(s.cfg, commUC, s.logger)
 
-	docs.SwaggerInfo.Title = "Go example REST API"
+	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	if s.cfg.Server.SSL {

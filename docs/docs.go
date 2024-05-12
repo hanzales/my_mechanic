@@ -19,9 +19,9 @@ var doc = `{
         "description": "{{.Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "Alexander Bryksin",
-            "url": "https://github.com/AleksK1NG",
-            "email": "alexander.bryksin@yandex.ru"
+            "name": "İlhan Emir",
+            "url": "https://github.com/hanzales",
+            "email": "ilhanemir1@gmail.com"
         },
         "version": "{{.Version}}"
     },
@@ -65,78 +65,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "update new comment",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Comments"
-                ],
-                "summary": "Update comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "comment_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Comment"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httpErrors.RestErr"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "delete comment",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Comments"
-                ],
-                "summary": "Delete comment",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "comment_id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httpErrors.RestErr"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {

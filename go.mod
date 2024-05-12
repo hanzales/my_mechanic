@@ -3,7 +3,6 @@ module MyMechanic
 go 1.20
 
 require (
-	github.com/AleksK1NG/api-mc v0.0.0-20210222141237-4ffdf6a3d5cb
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/google/uuid v1.2.0
 	github.com/jackc/pgx v3.6.2+incompatible
