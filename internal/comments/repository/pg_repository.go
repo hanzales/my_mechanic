@@ -36,6 +36,7 @@ func (r *commentsRepo) Delete(ctx context.Context, id int) error {
 		return errors.Wrap(err, "commentsRepo.Delete.ExecContext")
 	}
 	rowsAffected, err := result.RowsAffected()
+
 	if err != nil {
 		return errors.Wrap(err, "commentsRepo.Delete.RowsAffected")
 	}

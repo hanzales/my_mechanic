@@ -1,6 +1,7 @@
 package http
 
 import (
+	"MyMechanic/internal/models"
 	"github.com/opentracing/opentracing-go"
 	"net/http"
 	"strconv"
@@ -56,7 +57,7 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
 
-		return c.JSON(http.StatusOK, comment)
+		return c.JSON(http.StatusOK, models.NewSuccessResponse(comment))
 	}
 }
 
@@ -76,6 +77,6 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
 
-		return c.NoContent(http.StatusOK)
+		return c.JSON(http.StatusOK, models.NewEmptySuccessResponse())
 	}
 }
