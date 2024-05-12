@@ -32,11 +32,11 @@ definitions:
     type: object
 info:
   contact:
-    email: alexander.bryksin@yandex.ru
-    name: Alexander Bryksin
-    url: https://github.com/AleksK1NG
-  description: Example Golang REST API
-  title: Go Example REST API
+    email: ilhanemir1@gmail.com
+    name: İlhan Emir
+    url: https://github.com/hanzales
+  description: MyMechanic REST API
+  title: MyMechanic REST API
   version: "1.0"
 paths:
   /comments:
