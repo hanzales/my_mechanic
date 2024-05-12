@@ -1,6 +1,8 @@
-DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS comment CASCADE;
+DROP TABLE IF EXISTS demand CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
+--yorumların tutulduğu tablo
 CREATE TABLE comment
 (
     id serial PRIMARY KEY,
@@ -12,7 +14,20 @@ CREATE TABLE comment
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE user
+--talep tablosu
+create table demand
+(
+    id         serial PRIMARY KEY,
+    title      VARCHAR(1024)                                      NOT NULL CHECK ( title <> '' ),
+    message    VARCHAR(5000)                                      NOT NULL CHECK ( message <> '' ),
+    status     int                                                not null,
+    user_id    int                                                not null,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+--kullanıcı tablosu
+CREATE TABLE users
 (
     id      serial PRIMARY KEY,
     first_name   VARCHAR(32)                 NOT NULL CHECK ( first_name <> '' ),
