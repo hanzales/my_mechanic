@@ -10,4 +10,5 @@ import (
 func MapCommentsRoutes(commGroup *echo.Group, h comments.Handlers) {
 	commGroup.GET("/:id", h.GetByID())
 	commGroup.DELETE("/:id", h.Delete())
+	commGroup.POST("/add", h.Create())
 }

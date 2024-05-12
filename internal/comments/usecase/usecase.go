@@ -28,3 +28,7 @@ func (u *commentsUC) GetByID(ctx context.Context, id int) (*models.Comment, erro
 func (u *commentsUC) Delete(ctx context.Context, id int) error {
 	return u.commRepo.Delete(ctx, id)
 }
+
+func (u *commentsUC) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.AddCommentRequest, error) {
+	return u.commRepo.Create(ctx, addCommentRequest)
+}

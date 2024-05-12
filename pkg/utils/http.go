@@ -47,12 +47,11 @@ type UserCtxKey struct{}
 
 // Get user from context
 func GetUserFromCtx(ctx context.Context) (*models.User, error) {
-	user, ok := ctx.Value(UserCtxKey{}).(*models.User)
-	if !ok {
-		return nil, httpErrors.Unauthorized
-	}
-
-	return user, nil
+	//user, ok := ctx.Value(UserCtxKey{}).(*models.User)
+	//if !ok {
+	//	return nil, httpErrors.Unauthorized
+	//}
+	return new(models.User), nil
 }
 
 // Get user ip address

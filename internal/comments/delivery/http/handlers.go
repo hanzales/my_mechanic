@@ -80,3 +80,32 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, models.NewEmptySuccessResponse())
 	}
 }
+
+func (h *commentsHandlers) Create() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Create")
+		defer span.Finish()
+
+		user, err := utils.GetUserFromCtx(ctx)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		comment := &models.AddCommentRequest{}
+		user.Id = 1
+
+		if err = utils.SanitizeRequest(c, comment); err != nil {
+			return utils.ErrResponseWithLog(c, h.logger, err)
+			// return err
+		}
+
+		createdComment, err := h.comUC.Create(ctx, comment)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusCreated, createdComment)
+	}
+}

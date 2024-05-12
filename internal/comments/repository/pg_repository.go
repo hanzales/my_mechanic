@@ -21,7 +21,6 @@ func NewCommentsRepository(db *sqlx.DB) comments.Repository {
 
 // GetByID comment
 func (r *commentsRepo) GetByID(ctx context.Context, id int) (*models.Comment, error) {
-
 	comment := &models.Comment{}
 	if err := r.db.GetContext(ctx, comment, getCommentByID, id); err != nil {
 		return nil, errors.Wrap(err, "commentsRepo.GetByID.GetContext")
@@ -30,7 +29,6 @@ func (r *commentsRepo) GetByID(ctx context.Context, id int) (*models.Comment, er
 }
 
 func (r *commentsRepo) Delete(ctx context.Context, id int) error {
-
 	result, err := r.db.ExecContext(ctx, deleteComment, id)
 	if err != nil {
 		return errors.Wrap(err, "commentsRepo.Delete.ExecContext")
@@ -46,4 +44,20 @@ func (r *commentsRepo) Delete(ctx context.Context, id int) error {
 	}
 
 	return nil
+}
+
+func (r *commentsRepo) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.AddCommentRequest, error) {
+	comment := &models.AddCommentRequest{}
+
+	if err := r.db.QueryRowxContext(
+		ctx,
+		createComment,
+		&addCommentRequest.Message,
+		&addCommentRequest.UserId,
+		&addCommentRequest.DemandId,
+	).StructScan(comment); err != nil {
+		return nil, errors.Wrap(err, "commentsRepo.Create.StructScan")
+	}
+
+	return comment, nil
 }
