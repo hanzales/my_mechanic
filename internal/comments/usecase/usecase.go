@@ -24,3 +24,7 @@ func NewCommentsUseCase(cfg *config.Config, commRepo comments.Repository, logger
 func (u *commentsUC) GetByID(ctx context.Context, id int) (*models.Comment, error) {
 	return u.commRepo.GetByID(ctx, id)
 }
+
+func (u *commentsUC) Delete(ctx context.Context, id int) error {
+	return u.commRepo.Delete(ctx, id)
+}

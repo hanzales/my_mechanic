@@ -59,3 +59,23 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, comment)
 	}
 }
+
+func (h *commentsHandlers) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Delete")
+		defer span.Finish()
+
+		commID, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		if err = h.comUC.Delete(ctx, commID); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.NoContent(http.StatusOK)
+	}
+}

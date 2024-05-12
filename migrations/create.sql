@@ -10,6 +10,7 @@ CREATE TABLE comment
     likes      BIGINT                   DEFAULT 0,
     user_id int,
     demand_id int,
+    active boolean,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -44,6 +45,7 @@ CREATE TABLE users
     gender       VARCHAR(20)                 NOT NULL DEFAULT 'male',
     postcode     INTEGER,
     birthday     DATE                                 DEFAULT NULL,
+    active boolean,
     created_at   TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT NOW(),
     updated_at   TIMESTAMP WITH TIME ZONE             DEFAULT CURRENT_TIMESTAMP,
     login_date   TIMESTAMP(0) WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP

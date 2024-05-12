@@ -4,6 +4,7 @@ import (
 	"MyMechanic/internal/comments"
 	"MyMechanic/internal/models"
 	"context"
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
@@ -26,4 +27,22 @@ func (r *commentsRepo) GetByID(ctx context.Context, id int) (*models.Comment, er
 		return nil, errors.Wrap(err, "commentsRepo.GetByID.GetContext")
 	}
 	return comment, nil
+}
+
+func (r *commentsRepo) Delete(ctx context.Context, id int) error {
+
+	result, err := r.db.ExecContext(ctx, deleteComment, id)
+	if err != nil {
+		return errors.Wrap(err, "commentsRepo.Delete.ExecContext")
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return errors.Wrap(err, "commentsRepo.Delete.RowsAffected")
+	}
+
+	if rowsAffected == 0 {
+		return errors.Wrap(sql.ErrNoRows, "commentsRepo.Delete.rowsAffected")
+	}
+
+	return nil
 }

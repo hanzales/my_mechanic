@@ -1,5 +1,6 @@
 package repository
 
 const (
-	getCommentByID = `select id, message, likes,user_id,demand_id, created_at, updated_at from comment where id = $1`
+	getCommentByID = `SELECT id, message, likes,user_id,demand_id,active, created_at, updated_at FROM comment WHERE id = $1`
+	deleteComment  = `UPDATE comment SET active = false, updated_at = now() WHERE id = $1`
 )

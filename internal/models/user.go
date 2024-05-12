@@ -25,6 +25,7 @@ type User struct {
 	Gender      *string    `json:"gender,omitempty" db:"gender" redis:"gender" validate:"omitempty,lte=10"`
 	Postcode    *int       `json:"postcode,omitempty" db:"postcode" redis:"postcode" validate:"omitempty"`
 	Birthday    *time.Time `json:"birthday,omitempty" db:"birthday" redis:"birthday" validate:"omitempty,lte=10"`
+	Active      bool       `json:"active" db:"active"`
 	CreatedAt   time.Time  `json:"created_at,omitempty" db:"created_at" redis:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at,omitempty" db:"updated_at" redis:"updated_at"`
 	LoginDate   time.Time  `json:"login_date" db:"login_date" redis:"login_date"`
