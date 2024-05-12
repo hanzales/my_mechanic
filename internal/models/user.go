@@ -4,13 +4,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // User full model
 type User struct {
-	UserID      uuid.UUID  `json:"user_id" db:"user_id" redis:"user_id" validate:"omitempty"`
+	Id          int        `json:"user_id" db:"user_id" redis:"user_id" validate:"omitempty"`
 	FirstName   string     `json:"first_name" db:"first_name" redis:"first_name" validate:"required,lte=30"`
 	LastName    string     `json:"last_name" db:"last_name" redis:"last_name" validate:"required,lte=30"`
 	Email       string     `json:"email,omitempty" db:"email" redis:"email" validate:"omitempty,lte=60,email"`
