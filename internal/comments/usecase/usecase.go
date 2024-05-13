@@ -32,3 +32,11 @@ func (u *commentsUC) Delete(ctx context.Context, id int) error {
 func (u *commentsUC) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.Comment, error) {
 	return u.commRepo.Create(ctx, addCommentRequest)
 }
+
+func (u *commentsUC) Update(ctx context.Context, updateCommentRequest *models.UpdateCommentRequest) (*models.Comment, error) {
+	return u.commRepo.Update(ctx, updateCommentRequest)
+}
+
+func (u *commentsUC) IncreaseLikeCount(ctx context.Context, increaseLikeRequest *models.IncreaseLikeRequest) error {
+	return u.commRepo.IncreaseLikeCount(ctx, increaseLikeRequest)
+}

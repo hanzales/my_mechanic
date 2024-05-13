@@ -17,4 +17,7 @@ const (
 								true,
 								now(),
 								now()) RETURNING *`
+
+	updateComment     = `UPDATE comment SET message = $1, updated_at = now() WHERE id = $2 RETURNING *`
+	increaseLikeCount = `UPDATE  comment SET likes = likes + 1, updated_at = now() WHERE id = $1`
 )

@@ -7,4 +7,6 @@ type Handlers interface {
 	GetByID() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 	Create() echo.HandlerFunc
+	Update() echo.HandlerFunc
+	IncreaseLikeCount() echo.HandlerFunc
 }

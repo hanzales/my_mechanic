@@ -110,3 +110,59 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, models.NewSuccessResponse(createdComment))
 	}
 }
+
+func (h *commentsHandlers) Update() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Update")
+		defer span.Finish()
+
+		user, err := utils.GetUserFromCtx(ctx)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		comment := &models.UpdateCommentRequest{}
+		user.Id = 1
+
+		if err = utils.SanitizeRequest(c, comment); err != nil {
+			return utils.ErrResponseWithLog(c, h.logger, err)
+			// return err
+		}
+
+		updatedComment, err := h.comUC.Update(ctx, comment)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewSuccessResponse(updatedComment))
+	}
+}
+
+func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.IncreaseLikeCount")
+		defer span.Finish()
+
+		user, err := utils.GetUserFromCtx(ctx)
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		increaseLikeRequest := &models.IncreaseLikeRequest{}
+		user.Id = 1
+
+		if err = utils.SanitizeRequest(c, increaseLikeRequest); err != nil {
+			return utils.ErrResponseWithLog(c, h.logger, err)
+		}
+
+		if err = h.comUC.IncreaseLikeCount(ctx, increaseLikeRequest); err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(httpErrors.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewEmptySuccessResponse())
+	}
+}

@@ -16,8 +16,21 @@ type Comment struct {
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
+// #region
+
 type AddCommentRequest struct {
 	Message  string
 	DemandId int
 	UserId   int
 }
+
+type UpdateCommentRequest struct {
+	Id      int
+	Message string
+}
+
+type IncreaseLikeRequest struct {
+	Id int
+}
+
+// #endregion

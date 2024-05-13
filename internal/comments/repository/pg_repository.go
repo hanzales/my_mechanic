@@ -61,3 +61,36 @@ func (r *commentsRepo) Create(ctx context.Context, addCommentRequest *models.Add
 
 	return comment, nil
 }
+
+func (r *commentsRepo) Update(ctx context.Context, updateCommentRequest *models.UpdateCommentRequest) (*models.Comment, error) {
+	comment := &models.Comment{}
+
+	if err := r.db.QueryRowxContext(
+		ctx,
+		updateComment,
+		updateCommentRequest.Message,
+		updateCommentRequest.Id,
+	).StructScan(comment); err != nil {
+		return nil, errors.Wrap(err, "commentsRepo.Update.StructScan")
+	}
+
+	return comment, nil
+}
+
+func (r *commentsRepo) IncreaseLikeCount(ctx context.Context, increaseLikeRequest *models.IncreaseLikeRequest) error {
+	result, err := r.db.ExecContext(ctx, increaseLikeCount, increaseLikeRequest.Id)
+	if err != nil {
+		return errors.Wrap(err, "commentsRepo.IncreaseLikeCount.ExecContext")
+	}
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return errors.Wrap(err, "commentsRepo.IncreaseLikeCount.RowsAffected")
+	}
+
+	if rowsAffected == 0 {
+		return errors.Wrap(sql.ErrNoRows, "commentsRepo.IncreaseLikeCount.rowsAffected")
+	}
+
+	return nil
+}
