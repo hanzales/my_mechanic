@@ -107,6 +107,6 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 			return c.JSON(httpErrors.ErrorResponse(err))
 		}
 
-		return c.JSON(http.StatusCreated, createdComment)
+		return c.JSON(http.StatusOK, models.NewSuccessResponse(createdComment))
 	}
 }

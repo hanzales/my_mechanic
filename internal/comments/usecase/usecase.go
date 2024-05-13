@@ -29,6 +29,6 @@ func (u *commentsUC) Delete(ctx context.Context, id int) error {
 	return u.commRepo.Delete(ctx, id)
 }
 
-func (u *commentsUC) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.AddCommentRequest, error) {
+func (u *commentsUC) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.Comment, error) {
 	return u.commRepo.Create(ctx, addCommentRequest)
 }

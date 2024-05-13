@@ -46,15 +46,15 @@ func (r *commentsRepo) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *commentsRepo) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.AddCommentRequest, error) {
-	comment := &models.AddCommentRequest{}
+func (r *commentsRepo) Create(ctx context.Context, addCommentRequest *models.AddCommentRequest) (*models.Comment, error) {
+	comment := &models.Comment{}
 
 	if err := r.db.QueryRowxContext(
 		ctx,
 		createComment,
-		&addCommentRequest.Message,
-		&addCommentRequest.UserId,
-		&addCommentRequest.DemandId,
+		addCommentRequest.Message,
+		addCommentRequest.UserId,
+		addCommentRequest.DemandId,
 	).StructScan(comment); err != nil {
 		return nil, errors.Wrap(err, "commentsRepo.Create.StructScan")
 	}
