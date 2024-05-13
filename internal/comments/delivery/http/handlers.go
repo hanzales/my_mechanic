@@ -41,11 +41,7 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.GetByID")
 		defer span.Finish()
 
-		//query param olarak değeri al
-		//commentIdv2 := c.QueryParam("id")
-		//fmt.Println("değer:", commentIdv2)
-
-		commID, err := strconv.Atoi(c.Param("id"))
+		commID, err := strconv.Atoi(c.QueryParam("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(httpErrors.ErrorResponse(err))
