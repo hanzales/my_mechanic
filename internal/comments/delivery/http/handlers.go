@@ -69,7 +69,6 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 	}
 }
 
-// çalışmıyor düzenlenecek
 func (h *commentsHandlers) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
