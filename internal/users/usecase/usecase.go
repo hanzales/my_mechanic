@@ -23,3 +23,8 @@ func NewUsersUseCase(cfg *config.Config, userRepo users.Repository, logger logge
 func (u usersUC) GetByID(ctx context.Context, id int) (*models.User, error) {
 	return u.userRepo.GetByID(ctx, id)
 }
+
+func (u usersUC) Login(ctx context.Context, request models.LoginRequest) (*models.User, error) {
+	//TODO implement me
+	panic("implement me")
+}

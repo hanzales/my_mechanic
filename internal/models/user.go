@@ -30,6 +30,11 @@ type User struct {
 	LoginDate   time.Time  `json:"login_date" db:"login_date" redis:"login_date"`
 }
 
+type LoginRequest struct {
+	UserName string
+	Password string
+}
+
 // Hash user password with bcrypt
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)

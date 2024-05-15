@@ -40,3 +40,8 @@ func (u usersHandlers) GetByID() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, models.NewSuccessResponse(user))
 	}
 }
+
+func (u usersHandlers) Login() echo.HandlerFunc {
+	//TODO implement me
+	panic("implement me")
+}
