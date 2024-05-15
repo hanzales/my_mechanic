@@ -5,7 +5,7 @@ import (
 	"MyMechanic/pkg/sanitize"
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 
@@ -89,7 +89,7 @@ func ReadRequest(ctx echo.Context, request interface{}) error {
 
 // Read sanitize and validate request
 func SanitizeRequest(ctx echo.Context, request interface{}) error {
-	body, err := ioutil.ReadAll(ctx.Request().Body)
+	body, err := io.ReadAll(ctx.Request().Body)
 	if err != nil {
 		return err
 	}

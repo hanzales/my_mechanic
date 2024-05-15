@@ -73,18 +73,11 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 func (h *commentsHandlers) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user, err := utils.GetUserFromCtx(c.Request().Context())
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
 		comment := &models.AddCommentRequest{}
-		user.Id = 1
+		err := utils.SanitizeRequest(c, comment)
 
-		if err = utils.SanitizeRequest(c, comment); err != nil {
+		if err != nil {
 			return utils.ErrResponseWithLog(c, h.logger, err)
-			// return err
 		}
 
 		createdComment, err := h.comUC.Create(c.Request().Context(), comment)
@@ -100,18 +93,11 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 func (h *commentsHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user, err := utils.GetUserFromCtx(c.Request().Context())
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
 		comment := &models.UpdateCommentRequest{}
-		user.Id = 1
+		err := utils.SanitizeRequest(c, comment)
 
-		if err = utils.SanitizeRequest(c, comment); err != nil {
+		if err != nil {
 			return utils.ErrResponseWithLog(c, h.logger, err)
-			// return err
 		}
 
 		updatedComment, err := h.comUC.Update(c.Request().Context(), comment)
@@ -127,16 +113,10 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		user, err := utils.GetUserFromCtx(c.Request().Context())
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
 		increaseLikeRequest := &models.IncreaseLikeRequest{}
-		user.Id = 1
+		err := utils.SanitizeRequest(c, increaseLikeRequest)
 
-		if err = utils.SanitizeRequest(c, increaseLikeRequest); err != nil {
+		if err != nil {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
