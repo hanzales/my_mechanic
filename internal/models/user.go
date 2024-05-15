@@ -31,7 +31,7 @@ type User struct {
 }
 
 type LoginRequest struct {
-	UserName string
+	Email    string
 	Password string
 }
 
