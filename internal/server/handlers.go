@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"MyMechanic/docs"
-	"MyMechanic/pkg/csrf"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -37,7 +36,6 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderXRequestID, csrf.CSRFHeader},
 	}))
 	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
 		StackSize:         1 << 10, // 1 KB
