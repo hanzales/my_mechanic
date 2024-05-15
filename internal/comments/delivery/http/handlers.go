@@ -2,7 +2,6 @@ package http
 
 import (
 	"MyMechanic/internal/models"
-	"github.com/opentracing/opentracing-go"
 	"net/http"
 	"strconv"
 
@@ -37,16 +36,13 @@ func NewCommentsHandlers(cfg *config.Config, comUC comments.UseCase, logger logg
 // @Router /comments/{id} [get]
 func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.GetByID")
-		defer span.Finish()
-
 		commID, err := strconv.Atoi(c.QueryParam("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}
 
-		comment, err := h.comUC.GetByID(ctx, commID)
+		comment, err := h.comUC.GetByID(c.Request().Context(), commID)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -58,16 +54,13 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 
 func (h *commentsHandlers) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Delete")
-		defer span.Finish()
-
 		commID, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}
 
-		if err = h.comUC.Delete(ctx, commID); err != nil {
+		if err = h.comUC.Delete(c.Request().Context(), commID); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}
@@ -79,10 +72,8 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 // çalışmıyor düzenlenecek
 func (h *commentsHandlers) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Create")
-		defer span.Finish()
 
-		user, err := utils.GetUserFromCtx(ctx)
+		user, err := utils.GetUserFromCtx(c.Request().Context())
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -96,7 +87,7 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 			// return err
 		}
 
-		createdComment, err := h.comUC.Create(ctx, comment)
+		createdComment, err := h.comUC.Create(c.Request().Context(), comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -108,10 +99,8 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 
 func (h *commentsHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.Update")
-		defer span.Finish()
 
-		user, err := utils.GetUserFromCtx(ctx)
+		user, err := utils.GetUserFromCtx(c.Request().Context())
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -125,7 +114,7 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 			// return err
 		}
 
-		updatedComment, err := h.comUC.Update(ctx, comment)
+		updatedComment, err := h.comUC.Update(c.Request().Context(), comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -137,10 +126,8 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 
 func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		span, ctx := opentracing.StartSpanFromContext(utils.GetRequestCtx(c), "commentsHandlers.IncreaseLikeCount")
-		defer span.Finish()
 
-		user, err := utils.GetUserFromCtx(ctx)
+		user, err := utils.GetUserFromCtx(c.Request().Context())
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -153,7 +140,7 @@ func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
-		if err = h.comUC.IncreaseLikeCount(ctx, increaseLikeRequest); err != nil {
+		if err = h.comUC.IncreaseLikeCount(c.Request().Context(), increaseLikeRequest); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}
