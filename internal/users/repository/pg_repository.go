@@ -26,7 +26,7 @@ func (u usersRepo) GetByID(ctx context.Context, id int) (*models.User, error) {
 	return user, nil
 }
 
-func (u usersRepo) Login(ctx context.Context, request models.LoginRequest) (*models.User, error) {
+func (u usersRepo) Login(ctx context.Context, request models.LoginRequest) (*models.UserWithToken, error) {
 	//TODO implement me
 	panic("implement me")
 }
