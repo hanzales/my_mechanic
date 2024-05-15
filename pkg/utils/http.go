@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"time"
 
-	"MyMechanic/pkg/httpErrors"
 	"MyMechanic/pkg/logger"
 	"github.com/labstack/echo/v4"
 )
@@ -67,7 +66,7 @@ func ErrResponseWithLog(ctx echo.Context, logger logger.Logger, err error) error
 		GetIPAddress(ctx),
 		err,
 	)
-	return ctx.JSON(httpErrors.ErrorResponse(err))
+	return ctx.JSON(models.ErrorResponse(err))
 }
 
 // Error response with logging error for echo context

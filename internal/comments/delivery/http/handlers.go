@@ -8,7 +8,6 @@ import (
 
 	"MyMechanic/config"
 	"MyMechanic/internal/comments"
-	"MyMechanic/pkg/httpErrors"
 	"MyMechanic/pkg/logger"
 	"MyMechanic/pkg/utils"
 	"github.com/labstack/echo/v4"
@@ -44,13 +43,13 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 		commID, err := strconv.Atoi(c.QueryParam("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		comment, err := h.comUC.GetByID(ctx, commID)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewSuccessResponse(comment))
@@ -65,12 +64,12 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 		commID, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		if err = h.comUC.Delete(ctx, commID); err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewEmptySuccessResponse())
@@ -86,7 +85,7 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 		user, err := utils.GetUserFromCtx(ctx)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		comment := &models.AddCommentRequest{}
@@ -100,7 +99,7 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 		createdComment, err := h.comUC.Create(ctx, comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewSuccessResponse(createdComment))
@@ -115,7 +114,7 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 		user, err := utils.GetUserFromCtx(ctx)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		comment := &models.UpdateCommentRequest{}
@@ -129,7 +128,7 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 		updatedComment, err := h.comUC.Update(ctx, comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewSuccessResponse(updatedComment))
@@ -144,7 +143,7 @@ func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 		user, err := utils.GetUserFromCtx(ctx)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		increaseLikeRequest := &models.IncreaseLikeRequest{}
@@ -156,7 +155,7 @@ func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 
 		if err = h.comUC.IncreaseLikeCount(ctx, increaseLikeRequest); err != nil {
 			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(httpErrors.ErrorResponse(err))
+			return c.JSON(models.ErrorResponse(err))
 		}
 
 		return c.JSON(http.StatusOK, models.NewEmptySuccessResponse())
