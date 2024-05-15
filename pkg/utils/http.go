@@ -2,36 +2,13 @@ package utils
 
 import (
 	"MyMechanic/internal/models"
+	"MyMechanic/pkg/logger"
 	"MyMechanic/pkg/sanitize"
-	"context"
 	"encoding/json"
+	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
-	"time"
-
-	"MyMechanic/pkg/logger"
-	"github.com/labstack/echo/v4"
 )
-
-// Get request id from echo context
-func GetRequestID(c echo.Context) string {
-	return c.Response().Header().Get(echo.HeaderXRequestID)
-}
-
-// ReqIDCtxKey is a key used for the Request ID in context
-type ReqIDCtxKey struct{}
-
-// Get ctx with timeout and request id from echo context
-func GetCtxWithReqID(c echo.Context) (context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithTimeout(c.Request().Context(), time.Second*15)
-	ctx = context.WithValue(ctx, ReqIDCtxKey{}, GetRequestID(c))
-	return ctx, cancel
-}
-
-// Get context  with request id
-func GetRequestCtx(c echo.Context) context.Context {
-	return context.WithValue(c.Request().Context(), ReqIDCtxKey{}, GetRequestID(c))
-}
 
 // Get config path for local or docker
 func GetConfigPath(configPath string) string {
@@ -44,15 +21,6 @@ func GetConfigPath(configPath string) string {
 // UserCtxKey is a key used for the User object in the context
 type UserCtxKey struct{}
 
-// Get user from context
-func GetUserFromCtx(ctx context.Context) (*models.User, error) {
-	//user, ok := ctx.Value(UserCtxKey{}).(*models.User)
-	//if !ok {
-	//	return nil, httpErrors.Unauthorized
-	//}
-	return new(models.User), nil
-}
-
 // Get user ip address
 func GetIPAddress(c echo.Context) string {
 	return c.Request().RemoteAddr
@@ -62,7 +30,6 @@ func GetIPAddress(c echo.Context) string {
 func ErrResponseWithLog(ctx echo.Context, logger logger.Logger, err error) error {
 	logger.Errorf(
 		"ErrResponseWithLog, RequestID: %s, IPAddress: %s, Error: %s",
-		GetRequestID(ctx),
 		GetIPAddress(ctx),
 		err,
 	)
@@ -73,18 +40,9 @@ func ErrResponseWithLog(ctx echo.Context, logger logger.Logger, err error) error
 func LogResponseError(ctx echo.Context, logger logger.Logger, err error) {
 	logger.Errorf(
 		"ErrResponseWithLog, RequestID: %s, IPAddress: %s, Error: %s",
-		GetRequestID(ctx),
 		GetIPAddress(ctx),
 		err,
 	)
-}
-
-// Read request body and validate
-func ReadRequest(ctx echo.Context, request interface{}) error {
-	if err := ctx.Bind(request); err != nil {
-		return err
-	}
-	return validate.StructCtx(ctx.Request().Context(), request)
 }
 
 // Read sanitize and validate request
