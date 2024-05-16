@@ -16,7 +16,7 @@ type usersUC struct {
 	logger   logger.Logger
 }
 
-// Comments UseCase constructor
+// Users Service constructor
 func UsersService(cfg *config.Config, userRepo users.Repository, logger logger.Logger) users.Service {
 	return &usersUC{cfg: cfg, userRepo: userRepo, logger: logger}
 }
