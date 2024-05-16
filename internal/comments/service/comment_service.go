@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"MyMechanic/config"
@@ -16,7 +16,7 @@ type commentsUC struct {
 }
 
 // Comments UseCase constructor
-func NewCommentsUseCase(cfg *config.Config, commRepo comments.Repository, logger logger.Logger) comments.UseCase {
+func CommentsService(cfg *config.Config, commRepo comments.Repository, logger logger.Logger) comments.Service {
 	return &commentsUC{cfg: cfg, commRepo: commRepo, logger: logger}
 }
 

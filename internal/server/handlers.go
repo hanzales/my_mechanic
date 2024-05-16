@@ -12,20 +12,20 @@ import (
 	// _ "github.com/AleksK1NG/api-mc/docs"
 	commentsHttp "MyMechanic/internal/comments/delivery/http"
 	commentsRepository "MyMechanic/internal/comments/repository"
-	commentsUseCase "MyMechanic/internal/comments/usecase"
+	commentsUseCase "MyMechanic/internal/comments/service"
 )
 
 // MapHandlers Map Server Handlers
 func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	// Init repositories
-	cRepo := commentsRepository.NewCommentsRepository(s.db)
+	cRepo := commentsRepository.CommentsRepository(s.db)
 
 	// Init useCases
-	commUC := commentsUseCase.NewCommentsUseCase(s.cfg, cRepo, s.logger)
+	commService := commentsUseCase.CommentsService(s.cfg, cRepo, s.logger)
 
 	// Init handlers
-	commHandlers := commentsHttp.NewCommentsHandlers(s.cfg, commUC, s.logger)
+	commHandlers := commentsHttp.CommentsHandlers(s.cfg, commService, s.logger)
 
 	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

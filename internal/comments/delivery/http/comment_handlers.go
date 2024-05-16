@@ -14,14 +14,14 @@ import (
 
 // Comments handlers
 type commentsHandlers struct {
-	cfg    *config.Config
-	comUC  comments.UseCase
-	logger logger.Logger
+	cfg         *config.Config
+	commService comments.Service
+	logger      logger.Logger
 }
 
-// NewCommentsHandlers Comments handlers constructor
-func NewCommentsHandlers(cfg *config.Config, comUC comments.UseCase, logger logger.Logger) comments.Handlers {
-	return &commentsHandlers{cfg: cfg, comUC: comUC, logger: logger}
+// CommentsHandlers Comments handlers constructor
+func CommentsHandlers(cfg *config.Config, commService comments.Service, logger logger.Logger) comments.Handlers {
+	return &commentsHandlers{cfg: cfg, commService: commService, logger: logger}
 }
 
 // GetByID
@@ -42,7 +42,7 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 			return c.JSON(models.ErrorResponse(err))
 		}
 
-		comment, err := h.comUC.GetByID(c.Request().Context(), commID)
+		comment, err := h.commService.GetByID(c.Request().Context(), commID)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -60,7 +60,7 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 			return c.JSON(models.ErrorResponse(err))
 		}
 
-		if err = h.comUC.Delete(c.Request().Context(), commID); err != nil {
+		if err = h.commService.Delete(c.Request().Context(), commID); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}
@@ -79,7 +79,7 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
-		createdComment, err := h.comUC.Create(c.Request().Context(), comment)
+		createdComment, err := h.commService.Create(c.Request().Context(), comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -99,7 +99,7 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
-		updatedComment, err := h.comUC.Update(c.Request().Context(), comment)
+		updatedComment, err := h.commService.Update(c.Request().Context(), comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
@@ -119,7 +119,7 @@ func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
-		if err = h.comUC.IncreaseLikeCount(c.Request().Context(), increaseLikeRequest); err != nil {
+		if err = h.commService.IncreaseLikeCount(c.Request().Context(), increaseLikeRequest); err != nil {
 			utils.LogResponseError(c, h.logger, err)
 			return c.JSON(models.ErrorResponse(err))
 		}

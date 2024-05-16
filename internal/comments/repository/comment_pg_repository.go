@@ -15,7 +15,7 @@ type commentsRepo struct {
 }
 
 // Comments Repository constructor
-func NewCommentsRepository(db *sqlx.DB) comments.Repository {
+func CommentsRepository(db *sqlx.DB) comments.Repository {
 	return &commentsRepo{db: db}
 }
 
