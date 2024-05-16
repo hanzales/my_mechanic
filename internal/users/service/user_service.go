@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"MyMechanic/config"
@@ -16,7 +16,7 @@ type usersUC struct {
 }
 
 // Comments UseCase constructor
-func NewUsersUseCase(cfg *config.Config, userRepo users.Repository, logger logger.Logger) users.UseCase {
+func UsersService(cfg *config.Config, userRepo users.Repository, logger logger.Logger) users.Service {
 	return &usersUC{cfg: cfg, userRepo: userRepo, logger: logger}
 }
 

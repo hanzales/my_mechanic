@@ -11,15 +11,15 @@ import (
 	"strconv"
 )
 
-// Comments handlers
+// Users handlers
 type usersHandlers struct {
 	cfg    *config.Config
-	userUC users.UseCase
+	userUC users.Service
 	logger logger.Logger
 }
 
-// NewCommentsHandlers Comments handlers constructor
-func NewUsersHandlers(cfg *config.Config, userUC users.UseCase, logger logger.Logger) users.Handlers {
+// UsersHandlers Userss handlers constructor
+func UsersHandlers(cfg *config.Config, userUC users.Service, logger logger.Logger) users.Handlers {
 	return &usersHandlers{cfg: cfg, userUC: userUC, logger: logger}
 }
 
@@ -42,6 +42,5 @@ func (u usersHandlers) GetByID() echo.HandlerFunc {
 }
 
 func (u usersHandlers) Login() echo.HandlerFunc {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }

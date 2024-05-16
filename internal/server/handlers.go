@@ -1,6 +1,7 @@
 package server
 
 import (
+	commentsRepository "MyMechanic/internal/comments/repository"
 	"strings"
 
 	"MyMechanic/docs"
@@ -11,21 +12,27 @@ import (
 
 	// _ "github.com/AleksK1NG/api-mc/docs"
 	commentsHttp "MyMechanic/internal/comments/delivery/http"
-	commentsRepository "MyMechanic/internal/comments/repository"
-	commentsUseCase "MyMechanic/internal/comments/service"
+	commentsService "MyMechanic/internal/comments/service"
+	usersHttp "MyMechanic/internal/users/delivery/http"
+
+	usersRepository "MyMechanic/internal/users/repository"
+	usersService "MyMechanic/internal/users/service"
 )
 
 // MapHandlers Map Server Handlers
 func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	// Init repositories
-	cRepo := commentsRepository.CommentsRepository(s.db)
+	commentsRepo := commentsRepository.CommentsRepository(s.db)
+	usersRepo := usersRepository.UsersRepository(s.db)
 
-	// Init useCases
-	commService := commentsUseCase.CommentsService(s.cfg, cRepo, s.logger)
+	// Init services
+	commentService := commentsService.CommentsService(s.cfg, commentsRepo, s.logger)
+	userService := usersService.UsersService(s.cfg, usersRepo, s.logger)
 
 	// Init handlers
-	commHandlers := commentsHttp.CommentsHandlers(s.cfg, commService, s.logger)
+	commHandlers := commentsHttp.CommentsHandlers(s.cfg, commentService, s.logger)
+	userHandlers := usersHttp.UsersHandlers(s.cfg, userService, s.logger)
 
 	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
@@ -55,9 +62,11 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	v1 := e.Group("/api/v1")
 
-	commGroup := v1.Group("/comments")
+	commentGroup := v1.Group("/comments")
+	userGroup := v1.Group("/users")
 
-	commentsHttp.MapCommentsRoutes(commGroup, commHandlers)
+	commentsHttp.MapCommentsRoutes(commentGroup, commHandlers)
+	usersHttp.MapUsersRoutes(userGroup, userHandlers)
 
 	return nil
 }

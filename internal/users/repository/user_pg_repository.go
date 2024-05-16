@@ -14,7 +14,7 @@ type usersRepo struct {
 }
 
 // Comments Repository constructor
-func NewUsersRepository(db *sqlx.DB) users.Repository {
+func UsersRepository(db *sqlx.DB) users.Repository {
 	return &usersRepo{db: db}
 }
 
