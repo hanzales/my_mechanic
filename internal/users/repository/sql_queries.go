@@ -1,7 +1,7 @@
 package repository
 
 const (
-	getUserByID = `
+	getUserByEmail = `
 					SELECT id,
 						   first_name,
 						   last_name,
@@ -21,5 +21,5 @@ const (
 						   created_at,
 						   updated_at,
 						   login_date
-					FROM users WHERE id = $1`
+					FROM users WHERE email = $1`
 )

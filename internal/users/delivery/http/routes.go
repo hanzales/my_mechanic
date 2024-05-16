@@ -7,6 +7,5 @@ import (
 
 // Map comments routes
 func MapUsersRoutes(userGroup *echo.Group, h users.Handlers) {
-	userGroup.GET("/get", h.GetByID())
 	userGroup.POST("/login", h.Login())
 }

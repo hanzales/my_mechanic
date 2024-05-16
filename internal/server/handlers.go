@@ -62,8 +62,8 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	v1 := e.Group("/api/v1")
 
-	commentGroup := v1.Group("/comments")
-	userGroup := v1.Group("/users")
+	commentGroup := v1.Group("/comment")
+	userGroup := v1.Group("/user")
 
 	commentsHttp.MapCommentsRoutes(commentGroup, commHandlers)
 	usersHttp.MapUsersRoutes(userGroup, userHandlers)

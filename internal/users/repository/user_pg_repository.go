@@ -18,15 +18,16 @@ func UsersRepository(db *sqlx.DB) users.Repository {
 	return &usersRepo{db: db}
 }
 
-func (u usersRepo) GetByID(ctx context.Context, id int) (*models.User, error) {
+func (u *usersRepo) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	user := &models.User{}
-	if err := u.db.GetContext(ctx, user, getUserByID, id); err != nil {
-		return nil, errors.Wrap(err, "usersRepo.GetByID.GetContext")
-	}
-	return user, nil
-}
 
-func (u usersRepo) Login(ctx context.Context, request models.LoginRequest) (*models.UserWithToken, error) {
-	//TODO implement me
-	panic("implement me")
+	if err := u.db.QueryRowxContext(
+		ctx,
+		getUserByEmail,
+		email,
+	).StructScan(user); err != nil {
+		return nil, errors.Wrap(err, "usersRepo.GetUserByEmail.GetContext")
+	}
+
+	return user, nil
 }

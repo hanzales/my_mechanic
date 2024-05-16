@@ -6,6 +6,7 @@ import (
 	"MyMechanic/internal/users"
 	"MyMechanic/pkg/logger"
 	"context"
+	"github.com/pkg/errors"
 )
 
 // Comments UseCase
@@ -20,11 +21,20 @@ func UsersService(cfg *config.Config, userRepo users.Repository, logger logger.L
 	return &usersUC{cfg: cfg, userRepo: userRepo, logger: logger}
 }
 
-func (u usersUC) GetByID(ctx context.Context, id int) (*models.User, error) {
-	return u.userRepo.GetByID(ctx, id)
-}
+func (u usersUC) Login(ctx context.Context, request *models.LoginRequest) (*models.UserWithToken, error) {
+	foundUser, err := u.userRepo.GetUserByEmail(ctx, request.Email)
 
-func (u usersUC) Login(ctx context.Context, request models.LoginRequest) (*models.UserWithToken, error) {
-	//TODO implement me
-	panic("implement me")
+	//if foundUser != nil || err == nil {
+	//	return nil, models.NewRestErrorWithMessage(http.StatusBadRequest, models.ErrEmailAlreadyExists, nil)
+	//}
+
+	if err = foundUser.PrepareCreate(); err != nil {
+		return nil, models.NewBadRequestError(errors.Wrap(err, ""))
+	}
+
+	if err = foundUser.ComparePasswords(request.Password); err != nil {
+		return nil, models.NewUnauthorizedError(errors.Wrap(err, "usersservice.GetUsers.ComparePasswords"))
+	}
+
+	return nil, err
 }

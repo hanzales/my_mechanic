@@ -8,7 +8,6 @@ import (
 	"MyMechanic/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strconv"
 )
 
 // Users handlers
@@ -23,24 +22,41 @@ func UsersHandlers(cfg *config.Config, userUC users.Service, logger logger.Logge
 	return &usersHandlers{cfg: cfg, userUC: userUC, logger: logger}
 }
 
-func (u usersHandlers) GetByID() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		userId, err := strconv.Atoi(c.QueryParam("id"))
-		if err != nil {
-			utils.LogResponseError(c, u.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
-		user, err := u.userUC.GetByID(c.Request().Context(), userId)
-		if err != nil {
-			utils.LogResponseError(c, u.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
-		return c.JSON(http.StatusOK, models.NewSuccessResponse(user))
-	}
-}
+//func (u usersHandlers) GetByID() echo.HandlerFunc {
+//	return func(c echo.Context) error {
+//		userId, err := strconv.Atoi(c.QueryParam("id"))
+//		if err != nil {
+//			utils.LogResponseError(c, u.logger, err)
+//			return c.JSON(models.ErrorResponse(err))
+//		}
+//
+//		user, err := u.userUC.GetByID(c.Request().Context(), userId)
+//		if err != nil {
+//			utils.LogResponseError(c, u.logger, err)
+//			return c.JSON(models.ErrorResponse(err))
+//		}
+//
+//		return c.JSON(http.StatusOK, models.NewSuccessResponse(user))
+//	}
+//}
 
 func (u usersHandlers) Login() echo.HandlerFunc {
-	return nil
+	return func(c echo.Context) error {
+
+		loginRequest := &models.LoginRequest{}
+		err := utils.SanitizeRequest(c, loginRequest)
+
+		if err != nil {
+			return utils.ErrResponseWithLog(c, u.logger, err)
+		}
+
+		userWithToken, err := u.userUC.Login(c.Request().Context(), loginRequest)
+
+		if err != nil {
+			utils.LogResponseError(c, u.logger, err)
+			return c.JSON(models.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewSuccessResponse(userWithToken))
+	}
 }

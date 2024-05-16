@@ -7,6 +7,5 @@ import (
 
 // Comments repository interface
 type Repository interface {
-	GetByID(ctx context.Context, id int) (*models.User, error)
-	Login(ctx context.Context, request models.LoginRequest) (*models.UserWithToken, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 }

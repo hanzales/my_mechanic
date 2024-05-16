@@ -176,3 +176,32 @@ func parseValidatorError(err error) RestError {
 func ErrorResponse(err error) (int, interface{}) {
 	return ParseErrors(err).Status(), ParseErrors(err)
 }
+
+// New Unauthorized Error
+func NewUnauthorizedError(causes interface{}) RestError {
+	return RestError{
+		ErrStatus: http.StatusUnauthorized,
+		ErrError:  Unauthorized.Error(),
+		ErrCauses: causes,
+		Success:   false,
+	}
+}
+
+func NewRestErrorWithMessage(status int, err string, causes interface{}) RestError {
+	return RestError{
+		ErrStatus: status,
+		ErrError:  err,
+		ErrCauses: causes,
+		Success:   false,
+	}
+}
+
+// New Bad Request Error
+func NewBadRequestError(causes interface{}) RestError {
+	return RestError{
+		ErrStatus: http.StatusBadRequest,
+		ErrError:  BadRequest.Error(),
+		ErrCauses: causes,
+		Success:   false,
+	}
+}
