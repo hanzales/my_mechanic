@@ -5,6 +5,7 @@ import (
 	"MyMechanic/internal/models"
 	"MyMechanic/internal/users"
 	"MyMechanic/pkg/logger"
+	"MyMechanic/pkg/utils"
 	"context"
 	"github.com/pkg/errors"
 )
@@ -24,17 +25,19 @@ func UsersService(cfg *config.Config, userRepo users.Repository, logger logger.L
 func (u usersUC) Login(ctx context.Context, request *models.LoginRequest) (*models.UserWithToken, error) {
 	foundUser, err := u.userRepo.GetUserByEmail(ctx, request.Email)
 
-	//if foundUser != nil || err == nil {
-	//	return nil, models.NewRestErrorWithMessage(http.StatusBadRequest, models.ErrEmailAlreadyExists, nil)
-	//}
-
-	if err = foundUser.PrepareCreate(); err != nil {
-		return nil, models.NewBadRequestError(errors.Wrap(err, ""))
+	if err != nil {
+		return nil, err
 	}
 
 	if err = foundUser.ComparePasswords(request.Password); err != nil {
-		return nil, models.NewUnauthorizedError(errors.Wrap(err, "usersservice.GetUsers.ComparePasswords"))
+		return nil, models.NewUnauthorizedError(errors.Wrap(err, "usersService.GetUsers.ComparePasswords"))
 	}
 
-	return nil, err
+	token, err := utils.GenerateJWTToken(foundUser, u.cfg)
+	if err != nil {
+		return nil, models.NewInternalServerError(errors.Wrap(err, "usersService.GetUsers.GenerateJWTToken"))
+	}
+
+	userWithToken := &models.UserWithToken{User: foundUser, Token: token}
+	return userWithToken, err
 }
