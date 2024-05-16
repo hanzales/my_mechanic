@@ -31,3 +31,17 @@ func (u *usersRepo) GetUserByEmail(ctx context.Context, email string) (*models.U
 
 	return user, nil
 }
+
+func (u *usersRepo) GetUserById(ctx context.Context, id int) (*models.User, error) {
+	user := &models.User{}
+
+	if err := u.db.QueryRowxContext(
+		ctx,
+		userById,
+		id,
+	).StructScan(user); err != nil {
+		return nil, errors.Wrap(err, "usersRepo.GetUserById.GetContext")
+	}
+
+	return user, nil
+}

@@ -17,6 +17,7 @@ import (
 
 	usersRepository "MyMechanic/internal/users/repository"
 	usersService "MyMechanic/internal/users/service"
+	apiMiddlewares "MyMechanic/middleware"
 )
 
 // MapHandlers Map Server Handlers
@@ -33,6 +34,8 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	// Init handlers
 	commHandlers := commentsHttp.CommentsHandlers(s.cfg, commentService, s.logger)
 	userHandlers := usersHttp.UsersHandlers(s.cfg, userService, s.logger)
+
+	apiMiddlewares.NewMiddlewareManager(userService, s.cfg, []string{"*"}, s.logger)
 
 	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

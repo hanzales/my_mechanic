@@ -115,6 +115,18 @@ func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 		increaseLikeRequest := &models.IncreaseLikeRequest{}
 		err := utils.SanitizeRequest(c, increaseLikeRequest)
 
+		user, err := utils.GetUserFromCtx(c.Request().Context())
+		if err != nil {
+			utils.LogResponseError(c, h.logger, err)
+			return c.JSON(models.ErrorResponse(err))
+		}
+
+		var userTestId = user.Id
+
+		if userTestId == 1 {
+
+		}
+
 		if err != nil {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}

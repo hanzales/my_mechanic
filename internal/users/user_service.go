@@ -7,4 +7,5 @@ import (
 
 type Service interface {
 	Login(ctx context.Context, request *models.LoginRequest) (*models.UserWithToken, error)
+	GetById(ctx context.Context, id int) (*models.User, error)
 }

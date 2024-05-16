@@ -4,6 +4,7 @@ import (
 	"MyMechanic/internal/models"
 	"MyMechanic/pkg/logger"
 	"MyMechanic/pkg/sanitize"
+	"context"
 	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"io"
@@ -63,4 +64,14 @@ func SanitizeRequest(ctx echo.Context, request interface{}) error {
 	}
 
 	return validate.StructCtx(ctx.Request().Context(), request)
+}
+
+// Get user from context
+func GetUserFromCtx(ctx context.Context) (*models.User, error) {
+	user, ok := ctx.Value(UserCtxKey{}).(*models.User)
+	if !ok {
+		return nil, models.Unauthorized
+	}
+
+	return user, nil
 }

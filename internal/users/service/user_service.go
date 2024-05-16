@@ -41,3 +41,7 @@ func (u usersUC) Login(ctx context.Context, request *models.LoginRequest) (*mode
 	userWithToken := &models.UserWithToken{User: foundUser, Token: token}
 	return userWithToken, err
 }
+
+func (u usersUC) GetById(ctx context.Context, id int) (*models.User, error) {
+	return u.userRepo.GetUserById(ctx, id)
+}
