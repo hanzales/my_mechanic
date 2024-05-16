@@ -35,7 +35,10 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	commHandlers := commentsHttp.CommentsHandlers(s.cfg, commentService, s.logger)
 	userHandlers := usersHttp.UsersHandlers(s.cfg, userService, s.logger)
 
-	apiMiddlewares.NewMiddlewareManager(userService, s.cfg, []string{"*"}, s.logger)
+	//düzenlenecek. handler bazlı çalışması lazım
+	mw := apiMiddlewares.NewMiddlewareManager(userService, s.cfg, []string{"*"}, s.logger)
+
+	e.Use(mw.AuthJWTMiddleware(userService, s.cfg))
 
 	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)

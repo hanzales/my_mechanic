@@ -19,7 +19,7 @@ import (
 func (mw *MiddlewareManager) AuthJWTMiddleware(authUC users.Service, cfg *config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			bearerHeader := c.Request().Header.Get("Bearer")
+			bearerHeader := c.Request().Header.Get("Authorization")
 
 			mw.logger.Infof("auth middleware bearerHeader %s", bearerHeader)
 
