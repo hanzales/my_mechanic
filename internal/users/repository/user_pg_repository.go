@@ -45,3 +45,29 @@ func (u *usersRepo) GetUserById(ctx context.Context, id int) (*models.User, erro
 
 	return user, nil
 }
+
+func (u *usersRepo) Register(ctx context.Context, request *models.RegisterRequest) (*models.User, error) {
+	user := &models.User{}
+
+	if err := u.db.QueryRowxContext(
+		ctx,
+		createUser,
+		&user.FirstName,
+		&user.LastName,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.About,
+		&user.Avatar,
+		&user.PhoneNumber,
+		&user.Address,
+		&user.City,
+		&user.Gender,
+		&user.Postcode,
+		&user.Birthday,
+	).StructScan(u); err != nil {
+		return nil, errors.Wrap(err, "userRepo.Register.StructScan")
+	}
+
+	return user, nil
+}

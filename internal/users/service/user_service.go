@@ -45,3 +45,7 @@ func (u usersUC) Login(ctx context.Context, request *models.LoginRequest) (*mode
 func (u usersUC) GetById(ctx context.Context, id int) (*models.User, error) {
 	return u.userRepo.GetUserById(ctx, id)
 }
+
+func (u usersUC) Register(ctx context.Context, request *models.RegisterRequest) (*models.User, error) {
+	return u.userRepo.Register(ctx, request)
+}

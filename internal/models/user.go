@@ -35,6 +35,23 @@ type LoginRequest struct {
 	Password string
 }
 
+type RegisterRequest struct {
+	FirstName   string
+	LastName    string
+	Email       string
+	Password    string
+	Role        *string
+	About       *string
+	Avatar      *string
+	PhoneNumber *string
+	Address     *string
+	City        *string
+	Country     *string
+	Gender      *string
+	Postcode    *int
+	Birthday    *time.Time
+}
+
 // Hash user password with bcrypt
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
