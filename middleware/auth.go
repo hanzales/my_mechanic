@@ -16,7 +16,7 @@ import (
 )
 
 // JWT way of auth using cookie or Authorization header
-func (mw *MiddlewareManager) AuthJWTMiddleware(authUC users.Service, cfg *config.Config) echo.MiddlewareFunc {
+func (mw *MiddlewareManager) AuthJWTMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			bearerHeader := c.Request().Header.Get("Authorization")
@@ -32,7 +32,7 @@ func (mw *MiddlewareManager) AuthJWTMiddleware(authUC users.Service, cfg *config
 
 				tokenString := headerParts[1]
 
-				if err := mw.validateJWTToken(tokenString, authUC, c, cfg); err != nil {
+				if err := mw.validateJWTToken(tokenString, mw.usersService, c, mw.cfg); err != nil {
 					mw.logger.Error("middleware validateJWTToken", zap.String("headerJWT", err.Error()))
 					return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError(models.Unauthorized))
 				}
@@ -46,7 +46,7 @@ func (mw *MiddlewareManager) AuthJWTMiddleware(authUC users.Service, cfg *config
 				return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError(models.Unauthorized))
 			}
 
-			if err = mw.validateJWTToken(cookie.Value, authUC, c, cfg); err != nil {
+			if err = mw.validateJWTToken(cookie.Value, mw.usersService, c, mw.cfg); err != nil {
 				mw.logger.Errorf("validateJWTToken", err.Error())
 				return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError(models.Unauthorized))
 			}

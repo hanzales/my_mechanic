@@ -2,6 +2,7 @@ package server
 
 import (
 	commentsRepository "MyMechanic/internal/comments/repository"
+	apiMiddlewares "MyMechanic/middleware"
 	"strings"
 
 	"MyMechanic/docs"
@@ -17,7 +18,6 @@ import (
 
 	usersRepository "MyMechanic/internal/users/repository"
 	usersService "MyMechanic/internal/users/service"
-	apiMiddlewares "MyMechanic/middleware"
 )
 
 // MapHandlers Map Server Handlers
@@ -37,8 +37,6 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 
 	//düzenlenecek. handler bazlı çalışması lazım
 	mw := apiMiddlewares.NewMiddlewareManager(userService, s.cfg, []string{"*"}, s.logger)
-
-	e.Use(mw.AuthJWTMiddleware(userService, s.cfg))
 
 	docs.SwaggerInfo.Title = "MyMechanic REST API"
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
@@ -71,7 +69,7 @@ func (s *Server) MapHandlers(e *echo.Echo) error {
 	commentGroup := v1.Group("/comment")
 	userGroup := v1.Group("/user")
 
-	commentsHttp.MapCommentsRoutes(commentGroup, commHandlers)
+	commentsHttp.MapCommentsRoutes(commentGroup, commHandlers, mw)
 	usersHttp.MapUsersRoutes(userGroup, userHandlers)
 
 	return nil

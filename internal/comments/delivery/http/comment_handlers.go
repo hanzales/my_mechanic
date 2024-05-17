@@ -54,6 +54,13 @@ func (h *commentsHandlers) GetByID() echo.HandlerFunc {
 
 func (h *commentsHandlers) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		// Kullanıcı bilgisi çekilip sadece hata kontrolü yapılıyor
+		if _, usErr := utils.GetUserFromCtx(c.Request().Context()); usErr != nil {
+			utils.LogResponseError(c, h.logger, usErr)
+			return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError("Yetki yok"))
+		}
+
 		commID, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -72,6 +79,13 @@ func (h *commentsHandlers) Delete() echo.HandlerFunc {
 func (h *commentsHandlers) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
+		// Kullanıcı bilgisi çekilip sadece hata kontrolü yapılıyor
+		user, usErr := utils.GetUserFromCtx(c.Request().Context())
+		if usErr != nil {
+			utils.LogResponseError(c, h.logger, usErr)
+			return c.JSON(models.ErrorResponse(usErr))
+		}
+
 		comment := &models.AddCommentRequest{}
 		err := utils.SanitizeRequest(c, comment)
 
@@ -79,6 +93,7 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 			return utils.ErrResponseWithLog(c, h.logger, err)
 		}
 
+		comment.UserId = user.Id
 		createdComment, err := h.commService.Create(c.Request().Context(), comment)
 		if err != nil {
 			utils.LogResponseError(c, h.logger, err)
@@ -91,6 +106,12 @@ func (h *commentsHandlers) Create() echo.HandlerFunc {
 
 func (h *commentsHandlers) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
+
+		// Kullanıcı bilgisi çekilip sadece hata kontrolü yapılıyor
+		if _, usErr := utils.GetUserFromCtx(c.Request().Context()); usErr != nil {
+			utils.LogResponseError(c, h.logger, usErr)
+			return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError("Yetki yok"))
+		}
 
 		comment := &models.UpdateCommentRequest{}
 		err := utils.SanitizeRequest(c, comment)
@@ -112,20 +133,14 @@ func (h *commentsHandlers) Update() echo.HandlerFunc {
 func (h *commentsHandlers) IncreaseLikeCount() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
+		// Kullanıcı bilgisi çekilip sadece hata kontrolü yapılıyor
+		if _, usErr := utils.GetUserFromCtx(c.Request().Context()); usErr != nil {
+			utils.LogResponseError(c, h.logger, usErr)
+			return c.JSON(http.StatusUnauthorized, models.NewUnauthorizedError("Yetki yok"))
+		}
+
 		increaseLikeRequest := &models.IncreaseLikeRequest{}
 		err := utils.SanitizeRequest(c, increaseLikeRequest)
-
-		user, err := utils.GetUserFromCtx(c.Request().Context())
-		if err != nil {
-			utils.LogResponseError(c, h.logger, err)
-			return c.JSON(models.ErrorResponse(err))
-		}
-
-		var userTestId = user.Id
-
-		if userTestId == 1 {
-
-		}
 
 		if err != nil {
 			return utils.ErrResponseWithLog(c, h.logger, err)

@@ -10,13 +10,6 @@ import (
 	"os"
 )
 
-// @title Go Example REST API
-// @version 1.0
-// @description Example Golang REST API
-// @contact.name Alexander Bryksin
-// @contact.url https://github.com/AleksK1NG
-// @contact.email alexander.bryksin@yandex.ru
-// @BasePath /api/v1
 func main() {
 	log.Println("Starting api server")
 
