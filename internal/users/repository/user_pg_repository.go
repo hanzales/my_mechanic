@@ -4,6 +4,7 @@ import (
 	"MyMechanic/internal/models"
 	"MyMechanic/internal/users"
 	"context"
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
@@ -21,11 +22,11 @@ func UsersRepository(db *sqlx.DB) users.Repository {
 func (u *usersRepo) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	user := &models.User{}
 
-	if err := u.db.QueryRowxContext(
-		ctx,
-		getUserByEmail,
-		email,
-	).StructScan(user); err != nil {
+	if err := u.db.QueryRowxContext(ctx, getUserByEmail, email).StructScan(user); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			// Kayıt bulunamadığında döndürülecek özel hata
+			return nil, nil
+		}
 		return nil, errors.Wrap(err, "usersRepo.GetUserByEmail.GetContext")
 	}
 
@@ -52,20 +53,20 @@ func (u *usersRepo) Register(ctx context.Context, request *models.RegisterReques
 	if err := u.db.QueryRowxContext(
 		ctx,
 		createUser,
-		&user.FirstName,
-		&user.LastName,
-		&user.Email,
-		&user.Password,
-		&user.Role,
-		&user.About,
-		&user.Avatar,
-		&user.PhoneNumber,
-		&user.Address,
-		&user.City,
-		&user.Gender,
-		&user.Postcode,
-		&user.Birthday,
-	).StructScan(u); err != nil {
+		&request.FirstName,
+		&request.LastName,
+		&request.Email,
+		&request.Password,
+		&request.Role,
+		&request.About,
+		&request.Avatar,
+		&request.PhoneNumber,
+		&request.Address,
+		&request.City,
+		&request.Gender,
+		&request.Postcode,
+		&request.Birthday,
+	).StructScan(user); err != nil {
 		return nil, errors.Wrap(err, "userRepo.Register.StructScan")
 	}
 

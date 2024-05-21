@@ -8,6 +8,8 @@ import (
 	"MyMechanic/pkg/utils"
 	"context"
 	"github.com/pkg/errors"
+	"net/http"
+	"time"
 )
 
 // Comments UseCase
@@ -46,6 +48,54 @@ func (u usersUC) GetById(ctx context.Context, id int) (*models.User, error) {
 	return u.userRepo.GetUserById(ctx, id)
 }
 
-func (u usersUC) Register(ctx context.Context, request *models.RegisterRequest) (*models.User, error) {
-	return u.userRepo.Register(ctx, request)
+func (u usersUC) Register(ctx context.Context, request *models.RegisterRequest) (*models.UserWithToken, error) {
+	foundUser, err := u.userRepo.GetUserByEmail(ctx, request.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	//Maile kayıtlı kullanıcı varsa hata ver
+	if foundUser != nil {
+		return nil, models.NewRestErrorWithMessage(http.StatusBadRequest, models.ErrEmailAlreadyExists, nil)
+	}
+
+	user := &models.User{0,
+		request.FirstName,
+		request.LastName,
+		request.Email,
+		request.Password,
+		request.Role,
+		request.About,
+		request.Avatar,
+		request.PhoneNumber,
+		request.Address,
+		request.City,
+		request.Country,
+		request.Gender,
+		request.Postcode,
+		request.Birthday,
+		true,
+		time.Now(),
+		time.Now(),
+		time.Now()}
+
+	if err = user.PrepareCreate(); err != nil {
+		return nil, models.NewBadRequestError(errors.Wrap(err, "authUC.Register.PrepareCreate"))
+	}
+
+	request.Password = user.Password
+	createdUser, err := u.userRepo.Register(ctx, request)
+	if err != nil {
+		return nil, err
+	}
+	createdUser.SanitizePassword()
+
+	token, err := utils.GenerateJWTToken(createdUser, u.cfg)
+	if err != nil {
+		return nil, models.NewInternalServerError(errors.Wrap(err, "authUC.Register.GenerateJWTToken"))
+	}
+
+	userWithToken := &models.UserWithToken{User: createdUser, Token: token}
+	return userWithToken, err
 }

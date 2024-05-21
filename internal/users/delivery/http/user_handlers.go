@@ -44,5 +44,22 @@ func (u usersHandlers) Login() echo.HandlerFunc {
 }
 
 func (u usersHandlers) Register() echo.HandlerFunc {
-	return nil
+	return func(c echo.Context) error {
+
+		registerRequest := &models.RegisterRequest{}
+		err := utils.SanitizeRequest(c, registerRequest)
+
+		if err != nil {
+			return utils.ErrResponseWithLog(c, u.logger, err)
+		}
+
+		userWithToken, err := u.userUC.Register(c.Request().Context(), registerRequest)
+
+		if err != nil {
+			utils.LogResponseError(c, u.logger, err)
+			return c.JSON(models.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, models.NewSuccessResponse(userWithToken))
+	}
 }
